@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Upwork Job Posting (BidIQ Test Page)</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f1f2f4;
+      color: #001e00;
+      margin: 0;
+      padding: 40px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #d5e0d5;
+      border-radius: 8px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      overflow: hidden;
+    }
+    header {
+      grid-column: span 2;
+      background: #14a800;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .badge {
+      background: rgba(255,255,255,0.2);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .main-content {
+      padding: 40px;
+      border-right: 1px solid #d5e0d5;
+    }
+    .sidebar {
+      padding: 40px;
+      background: #f9fbf9;
+    }
+    h2 {
+      font-size: 20px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      color: #001e00;
+    }
+    .job-title-container {
+      margin-bottom: 24px;
+    }
+    .job-title {
+      font-size: 28px;
+      margin: 0 0 8px 0;
+      font-weight: 600;
+    }
+    .job-description {
+      line-height: 1.6;
+      font-size: 15px;
+      color: #222222;
+      white-space: pre-line;
+      margin-bottom: 40px;
+    }
+    .client-stat-item {
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+    .client-stat-item strong {
+      display: block;
+      color: #001e00;
+      font-size: 15px;
+      margin-bottom: 2px;
+    }
+    .client-stat-item span {
+      color: #5e6d5e;
+    }
+    .verified-icon {
+      color: #14a800;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .proposal-area {
+      background: #f4f5f6;
+      border: 1px dashed #cccccc;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    .up-textarea textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    .test-banner {
+      background: #eef7ee;
+      border: 1px solid #14a800;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 30px;
+      font-size: 14px;
+      color: #14a800;
+      line-height: 1.5;
+    }
+    .input-field {
+      padding: 8px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      font-size: 14px;
+      width: 120px;
+      outline: none;
+    }
+    .input-field:focus {
+      border-color: #14a800;
+    }
+  </style>
+</head>
+<body>
+
+  <div style="max-width: 1000px; margin: 0 auto 20px auto;">
+    <div class="test-banner">
+      💡 <strong>BidIQ Test Sandbox</strong>: This local file simulates the exact DOM elements and classes found on an active Upwork job posting. Load this page in Chrome, open your <strong>BidIQ panel</strong>, and test client risk assessment and AI proposal generation instantly!
+      <br>
+      <small>⚠️ Note: Make sure you checked <strong>"Allow access to file URLs"</strong> for BidIQ in <a href="chrome://extensions/" target="_blank">chrome://extensions/</a>.</small>
+    </div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1>upwork</h1>
+      <span class="badge">BidIQ Test Workspace</span>
+    </header>
+
+    <!-- Left Main Panel -->
+    <div class="main-content">
+      <div class="job-title-container">
+        <!-- Scrape target for Job Title -->
+        <h1 class="job-title" data-qa="job-title">React Lead Architect for B2B Dashboard Integration</h1>
+        <div style="color: #5e6d5e; font-size: 13px;">Posted 2 hours ago • Worldwide</div>
+      </div>
+
+      <!-- Scrape target for Job Description -->
+      <div class="job-description" data-test="job-description">
+        We are looking for an expert Lead Architect to build a high-performance React B2B comparison and Lead-Gen dashboard.
+        
+        The core challenge is optimizing running costs across multiple speech API providers (like Vapi.ai, ElevenLabs, n8n, and Gemini), handling structured output generation via LLMs, and deploying to Vercel/Node with zero-latency load states.
+        
+        Requirements:
+        - 5+ years experience with React, Next.js, and TypeScript.
+        - Knowledge of Express.js backend setups, CORS configurations, and environment variables.
+        - Experience with OpenAI or Google Gemini API integration.
+        
+        Please outline your high-level approach and key architecture ideas in your proposal.
+      </div>
+
+      <hr style="border: 0; border-top: 1px solid #d5e0d5; margin: 40px 0;">
+
+      <!-- Scrape target for cover letter insertion -->
+      <div class="proposal-area">
+        <h2>Submit a Proposal</h2>
+        
+        <!-- Freelancer baseline selectors for hybrid testing -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; font-size: 14px;">
+          <div>
+            <label style="display:block; font-weight:600; margin-bottom:6px; color:#001e00;">Your Proposed Hourly Rate ($):</label>
+            <input type="text" data-test="hourly-rate-input" class="input-field" value="45.00">
+            <span style="color:#5e6d5e; font-size:12px;"> /hr</span>
+          </div>
+          <div>
+            <label style="display:block; font-weight:600; margin-bottom:6px; color:#001e00;">Active Profile Title:</label>
+            <div data-test="profile-selector" style="padding:8px 12px; border:1px solid #cccccc; border-radius:4px; background:#f4f5f6; display:inline-block; font-weight:600; color:#001e00;">
+              <span>Senior AI & Systems Engineer</span>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size: 13px; color: #5e6d5e; margin-bottom: 12px;">Cover Letter Input Field:</p>
+        <div class="up-textarea">
+          <textarea aria-labelledby="cover-letter-label" name="coverLetter" placeholder="Write your cover letter here..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar Panel (Client Info) -->
+    <!-- Content script target: section.client-about / aside -->
+    <aside class="sidebar client-about" data-qa="client-about">
+      <h2>About the Client</h2>
+
+      <div class="client-stat-item">
+        <strong>Payment Method</strong>
+        <!-- Scrape target for Payment Verification -->
+        <div class="verified-icon" data-qa="payment-verified">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:inline-block; vertical-align:middle;">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          Payment Method Verified
+        </div>
+      </div>
+
+      <div class="client-stat-item">
+        <strong>Client Stats</strong>
+        <!-- Scrape target for Hire Rate -->
+        <span data-test="client-stats">82% Hire Rate, 14 Active Jobs</span>
+      </div>
+
+      <div class="client-stat-item">
+        <strong>Client Hourly Rate History</strong>
+        <!-- Scrape target for Average Pay Rate -->
+        <span data-test="avg-hourly-rate">$32.50/hr Avg Hourly Rate Paid, 1,200 Hours</span>
+      </div>
+
+      <div class="client-stat-item">
+        <strong>Spend History</strong>
+        <!-- Scrape target for Spend -->
+        <span data-test="client-spend">$50k+ Total Spend</span>
+      </div>
+
+      <div class="client-stat-item">
+        <strong>Client Reviews</strong>
+        <!-- Scrape target for Rating -->
+        <span data-test="client-rating">4.89 of 5 stars (18 reviews)</span>
+      </div>
+
+      <div class="client-stat-item">
+        <strong>Location</strong>
+        <!-- Scrape target for Location -->
+        <span data-qa="client-location">San Francisco, United States</span>
+        <div style="font-size: 12px; color: #5e6d5e;">Client's local time is 9:48 AM PST</div>
+      </div>
+    </aside>
+  </div>
+
+</body>
+</html>

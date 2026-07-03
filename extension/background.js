@@ -4,7 +4,7 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'GENERATE_PROPOSAL') {
     generateProposal(message.data)
-      .then(result => sendResponse({ success: true, proposal: result }))
+      .then(result => sendResponse({ success: true, proposal: result.proposal, instanceId: result.instanceId }))
       .catch(error => sendResponse({ success: false, error: error.message }));
     return true; // Keeps the message channel open for async response
   }
@@ -16,8 +16,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Function to call the secure Next.js API route
-async function generateProposal({ backendUrl, jobTitle, jobDescription, clientMetrics, tone, focus }) {
+// Function to call the secure Express API route
+async function generateProposal({ 
+  backendUrl, 
+  jobTitle, 
+  jobDescription, 
+  clientMetrics, 
+  tone, 
+  focus, 
+  userProfile, 
+  clientUid, 
+  licenseKey, 
+  instanceId,
+  freelancerScrapedInfo 
+}) {
   const cleanUrl = (backendUrl || 'http://localhost:3001').replace(/\/$/, '');
   const endpoint = `${cleanUrl}/api/generate-proposal`;
 
@@ -32,7 +44,12 @@ async function generateProposal({ backendUrl, jobTitle, jobDescription, clientMe
         jobDescription,
         clientMetrics,
         tone,
-        focus
+        focus,
+        userProfile,
+        clientUid,
+        licenseKey,
+        instanceId,
+        freelancerScrapedInfo
       })
     });
 
@@ -42,7 +59,10 @@ async function generateProposal({ backendUrl, jobTitle, jobDescription, clientMe
     }
 
     const data = await response.json();
-    return data.proposal || data.text || '';
+    return {
+      proposal: data.proposal || '',
+      instanceId: data.instanceId || null
+    };
   } catch (error) {
     console.error('Error generating proposal in background:', error);
     throw error;

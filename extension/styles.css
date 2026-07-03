@@ -146,6 +146,24 @@
   transform: rotate(90deg);
 }
 
+.bidiq-refresh-btn {
+  background: transparent;
+  border: none;
+  color: var(--bidiq-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.bidiq-refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--bidiq-text-main);
+}
+
 /* Scrollable Container */
 .bidiq-body {
   flex: 1;

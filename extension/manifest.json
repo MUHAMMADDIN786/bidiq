@@ -8,7 +8,7 @@
   ],
   "host_permissions": [
     "https://*.upwork.com/*",
-    "http://localhost:3000/*"
+    "http://localhost:3001/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -25,7 +25,8 @@
     {
       "matches": [
         "https://*.upwork.com/jobs/*",
-        "https://*.upwork.com/ab/jobs/search/*"
+        "https://*.upwork.com/ab/jobs/search/*",
+        "file:///*/mock_upwork_page.html"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
@@ -34,7 +35,10 @@
   "web_accessible_resources": [
     {
       "resources": ["styles.css", "icons/*"],
-      "matches": ["https://*.upwork.com/*"]
+      "matches": [
+        "https://*.upwork.com/*",
+        "file:///*"
+      ]
     }
   ]
 }

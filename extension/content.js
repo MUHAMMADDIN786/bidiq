@@ -12,20 +12,95 @@
       if (jobId && jobId !== currentJobId) {
         currentJobId = jobId;
         // Wait a brief moment for dynamic content to load before scraping
-        setTimeout(processPage, 1500);
+        setTimeout(processPage, 1200);
       }
-    }, 1500);
+    }, 1200);
 
     // Run once on load
     setTimeout(processPage, 1000);
   }
 
-  // Extract a unique identifier from the job details page URL
+  // Extract a unique identifier from the job details page URL or active panel
   function getJobIdFromUrl() {
     const url = window.location.href;
-    // Matches e.g., upwork.com/jobs/~01b88e1a8cfc656041 or upwork.com/ab/jobs/search/...
-    const jobMatch = url.match(/\/jobs\/([^/?#]+)/) || url.match(/details=([^&]+)/);
-    return jobMatch ? jobMatch[1] : null;
+    const jobMatch = url.match(/\/jobs\/([^/?#]+)/) || url.match(/details=([^&]+)/) || url.match(/job=([^&]+)/);
+    if (jobMatch) return jobMatch[1];
+
+    // Check if slider drawer is open
+    const drawer = document.querySelector('[data-test="job-details-drawer"]') || 
+                   document.querySelector('.job-details-panel') || 
+                   document.querySelector('.slider-panel');
+    if (drawer) {
+      return 'drawer-' + drawer.innerText.substring(0, 30).replace(/[^a-zA-Z0-9]/g, '');
+    }
+    return null;
+  }
+
+  // Helper to isolate and extract text from the client info block
+  function getClientSectionText() {
+    const selectors = [
+      '[data-test="client-stats"]',
+      '.fe-client-stats',
+      '.client-about',
+      '[data-qa="client-about"]',
+      'section[class*="client-about"]',
+      'aside',
+      '#sidebar',
+      'div[class*="client-history"]',
+      '[data-qa="client-job-history"]',
+      '.job-details-panel',
+      '.slider-panel',
+      '[data-test="job-details-drawer"]'
+    ];
+
+    for (const selector of selectors) {
+      const el = document.querySelector(selector);
+      if (el && el.innerText.trim().length > 30) {
+        return el.innerText;
+      }
+    }
+    return '';
+  }
+
+  // Scrapes freelancer hourly rate/profile title from the page if available
+  function parseFreelancerBaseline() {
+    // 1. Scrape Freelancer Hourly Rate
+    let rate = null;
+    const rateInput = document.querySelector('[data-test="hourly-rate-input"]') || 
+                      document.querySelector('input[name*="hourlyRate"]') ||
+                      document.querySelector('.up-input-group input') ||
+                      document.querySelector('input[name*="rate"]');
+                      
+    if (rateInput && rateInput.value) {
+      rate = rateInput.value.trim();
+      if (!rate.startsWith('$')) rate = '$' + rate;
+      if (!rate.toLowerCase().includes('/hr') && !rate.toLowerCase().includes('fixed')) rate += '/hr';
+    } else {
+      // Look for a general profile rate text indicator on the page
+      const elements = Array.from(document.querySelectorAll('span, div, strong'));
+      for (const el of elements) {
+        if (el.innerText && el.innerText.match(/^\$\d+(?:\.\d+)?\/hr$/)) {
+          rate = el.innerText.trim();
+          break;
+        }
+      }
+    }
+
+    // 2. Scrape Freelancer Profile Title
+    let profileTitle = null;
+    const titleEl = document.querySelector('[data-test="profile-selector"] span') || 
+                    document.querySelector('[data-qa="profile-title"]') || 
+                    document.querySelector('.profile-title') ||
+                    document.querySelector('.up-dropdown-toggle') ||
+                    document.querySelector('.fe-proposal-profile-title');
+    if (titleEl) {
+      profileTitle = titleEl.textContent.trim();
+    }
+
+    return {
+      rate: rate || 'Not specified (using profile baseline rate)',
+      profileTitle: profileTitle || 'Not specified (using profile baseline title)'
+    };
   }
 
   // Inject panel shell into the page if it doesn't exist
@@ -34,7 +109,6 @@
 
     panelContainer = document.createElement('div');
     panelContainer.id = 'bidiq-extension-root';
-    // Style the host container slightly so it doesn't affect page layout
     panelContainer.style.position = 'fixed';
     panelContainer.style.zIndex = '2147483647';
     document.body.appendChild(panelContainer);
@@ -76,12 +150,19 @@
             </span>
             <div class="bidiq-logo-text">Bid<span>IQ</span></div>
           </div>
-          <button class="bidiq-close-btn" id="bidiq-close-btn" title="Close Panel">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button class="bidiq-refresh-btn" id="bidiq-refresh-btn" title="Refresh/Rescrape Page" style="transform:none; border-radius:50%;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+            </button>
+            <button class="bidiq-close-btn" id="bidiq-close-btn" title="Close Panel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
         </header>
 
         <div class="bidiq-body">
@@ -103,6 +184,20 @@
                 <span class="risk-stat-value" id="val-pay-rate">$--</span>
                 <span class="risk-stat-label">Avg Pay Rate</span>
               </div>
+              <div class="risk-stat-card" id="card-total-spend">
+                <span class="risk-stat-value" id="val-total-spend">$--</span>
+                <span class="risk-stat-label">Total Spend</span>
+              </div>
+              <div class="risk-stat-card" id="card-rating">
+                <span class="risk-stat-value" id="val-rating">--</span>
+                <span class="risk-stat-label">Rating</span>
+              </div>
+            </div>
+
+            <!-- Client Metadata Row -->
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--bidiq-text-muted); background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:8px; border:1px solid var(--bidiq-border);" id="client-meta-row">
+              <span id="val-client-location">📍 Location: --</span>
+              <span id="val-payment-status" style="font-weight:600;">💳 Unverified</span>
             </div>
 
             <div class="risk-badge" id="val-risk-level">
@@ -125,7 +220,10 @@
             </div>
 
             <div class="bidiq-option-group">
-              <div class="bidiq-option-label">Proposal Tone</div>
+              <div class="bidiq-option-label" style="display:flex; justify-content:space-between;">
+                <span>Proposal Tone</span>
+                <span class="lock-indicator" id="tone-lock-badge" style="color:#fb923c; font-size:9.5px; font-weight:700;">🔒 Pro gated</span>
+              </div>
               <div class="bidiq-chips-row" id="tone-chips">
                 <div class="bidiq-chip active" data-value="conversational">Conversational</div>
                 <div class="bidiq-chip" data-value="professional">Professional</div>
@@ -177,6 +275,7 @@
   function setupPanelEvents() {
     const toggleBtn = shadowRoot.getElementById('bidiq-toggle-btn');
     const closeBtn = shadowRoot.getElementById('bidiq-close-btn');
+    const refreshBtn = shadowRoot.getElementById('bidiq-refresh-btn');
     const panel = shadowRoot.getElementById('bidiq-side-panel');
     const btnGenerate = shadowRoot.getElementById('btn-generate');
     const btnCopy = shadowRoot.getElementById('btn-copy');
@@ -191,6 +290,8 @@
       panel.classList.add('open');
       toggleBtn.style.opacity = '0';
       toggleBtn.style.pointerEvents = 'none';
+      // Force rescrape when opening panel
+      processPage();
     });
 
     closeBtn.addEventListener('click', () => {
@@ -199,9 +300,20 @@
       toggleBtn.style.pointerEvents = 'auto';
     });
 
-    // Chip selections
-    setupChips(toneChips);
-    setupChips(focusChips);
+    // Refresh manually
+    refreshBtn.addEventListener('click', () => {
+      refreshBtn.style.transform = 'rotate(360deg)';
+      refreshBtn.style.transition = 'transform 0.5s ease';
+      setTimeout(() => {
+        refreshBtn.style.transform = 'none';
+        refreshBtn.style.transition = 'none';
+      }, 500);
+      processPage();
+    });
+
+    // Chip selections (Tones are gated, Focuses are free)
+    setupChips(toneChips, true);
+    setupChips(focusChips, false);
 
     // Generate Proposal Click
     btnGenerate.addEventListener('click', async () => {
@@ -213,12 +325,39 @@
       setGeneratingState(true);
 
       // Load Settings from storage
-      chrome.storage.local.get(['backendUrl'], async (settings) => {
-        const backendUrl = settings.backendUrl || 'http://localhost:3000';
-        const activeTone = shadowRoot.querySelector('#tone-chips .bidiq-chip.active').dataset.value;
-        const activeFocus = shadowRoot.querySelector('#focus-chips .bidiq-chip.active').dataset.value;
+      chrome.storage.local.get(['backendUrl', 'userProfile', 'clientUid', 'licenseKey', 'instanceId'], async (settings) => {
+        const backendUrl = settings.backendUrl || 'http://localhost:3001';
+        
+        // Generate Client ID if missing (ensuring limit tracking works even if popup hasn't opened)
+        let clientUid = settings.clientUid;
+        if (!clientUid) {
+          clientUid = 'uid-' + Date.now().toString(36) + '-' + Math.random().toString(36).substr(2, 9);
+          chrome.storage.local.set({ clientUid });
+        }
 
-        // Send message to background script to call Next.js backend
+        // Check license status locally to gate payloads securely
+        const isPremium = settings.licenseKey && (settings.licenseKey.trim().toUpperCase().startsWith('BIDIQ-PREM-') || settings.instanceId);
+        
+        // Gate parameters securely
+        const activeTone = isPremium ? 
+          (shadowRoot.querySelector('#tone-chips .bidiq-chip.active')?.dataset.value || 'conversational') : 
+          'conversational';
+          
+        const activeFocus = shadowRoot.querySelector('#focus-chips .bidiq-chip.active')?.dataset.value || 'quality';
+        const userProfile = isPremium ? (settings.userProfile || '') : '';
+        
+        if (!isPremium) {
+          // Visually force the conversational chip active
+          toneChips.forEach(c => {
+            if (c.dataset.value === 'conversational') c.classList.add('active');
+            else c.classList.remove('active');
+          });
+        }
+
+        // Scrape baseline freelancer profile parameters dynamically
+        const freelancerScrapedInfo = parseFreelancerBaseline();
+
+        // Send message to background script to call backend
         chrome.runtime.sendMessage({
           action: 'GENERATE_PROPOSAL',
           data: {
@@ -227,16 +366,27 @@
             jobDescription: scrapedData.description,
             clientMetrics: scrapedData.client,
             tone: activeTone,
-            focus: activeFocus
+            focus: activeFocus,
+            userProfile,
+            clientUid: clientUid,
+            licenseKey: settings.licenseKey || '',
+            instanceId: settings.instanceId || '',
+            freelancerScrapedInfo
           }
         }, (response) => {
           setGeneratingState(false);
           if (response && response.success) {
             proposalOutput.value = response.proposal;
+            
+            // Save instanceId returned from successful backend registration
+            if (response.instanceId) {
+              chrome.storage.local.set({ instanceId: response.instanceId });
+            }
+
             // Track generated proposal in stats
             chrome.runtime.sendMessage({ action: 'UPDATE_STATS', type: 'generated' });
           } else {
-            proposalOutput.value = `Error generating proposal:\n${response ? response.error : 'Could not reach backend API.'}\n\nMake sure your Next.js server is running and configured.`;
+            proposalOutput.value = `Error generating proposal:\n${response ? response.error : 'Could not reach backend API.'}`;
           }
         });
       });
@@ -277,9 +427,23 @@
     });
   }
 
-  function setupChips(chips) {
+  function setupChips(chips, isTone = false) {
     chips.forEach(chip => {
       chip.addEventListener('click', () => {
+        if (isTone && chip.dataset.value !== 'conversational') {
+          // Gate non-conversational tones
+          chrome.storage.local.get(['licenseKey', 'instanceId'], (settings) => {
+            const isPremium = settings.licenseKey && (settings.licenseKey.trim().toUpperCase().startsWith('BIDIQ-PREM-') || settings.instanceId);
+            if (!isPremium) {
+              alert('🔒 Custom Tones (Professional & Technical) are a Premium Feature. Please unlock Premium in the BidIQ popup settings to use selective tones!');
+              return;
+            }
+            chips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+          });
+          return;
+        }
+
         chips.forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
       });
@@ -299,18 +463,23 @@
     }
   }
 
-  // Scrapes the client details and job text from the page
+  // Scrapes the client details and job text from the page using advanced heuristics
   function processPage() {
-    // 1. Check if we are on a job details page
+    // 1. Check if we are on a job details page/panel
     const titleEl = document.querySelector('[data-qa="job-title"]') || 
                     document.querySelector('.fe-job-details-header h1') || 
                     document.querySelector('.job-details-header h1') || 
+                    document.querySelector('.job-details-panel h1') ||
+                    document.querySelector('.slider-panel h1') ||
+                    document.querySelector('.air3-card h1') ||
                     document.querySelector('h1');
                     
     const descEl = document.querySelector('[data-test="job-description"]') || 
                    document.querySelector('.fe-job-details-description') || 
                    document.querySelector('.job-description') ||
-                   document.querySelector('.up-line-clamp');
+                   document.querySelector('[itemprop="description"]') ||
+                   document.querySelector('.up-line-clamp') ||
+                   document.querySelector('.break-word');
 
     if (!titleEl || !descEl) {
       console.log('BidIQ: Not a job details page or elements not loaded yet.');
@@ -324,50 +493,108 @@
     const description = descEl.textContent.trim();
 
     // 3. Scrape Client Metrics using flexible heuristics (regular expressions & DOM parsing)
-    const pageText = document.body.innerText;
+    const clientText = getClientSectionText() || document.body.innerText;
     
     // Scrape Hire Rate (e.g., "75% hire rate")
     let hireRate = null;
-    const hireRateMatch = pageText.match(/(\d+)%\s+hire\s+rate/i);
+    const hireRateMatch = clientText.match(/(\d+)%\s*(?:hire\s+rate|hiring\s+rate|hires)/i) || 
+                          clientText.match(/(?:hire\s+rate|hiring\s+rate):\s*(\d+)%/i);
     if (hireRateMatch) {
       hireRate = parseInt(hireRateMatch[1], 10);
     } else {
-      // Fallback: look in client stats container
-      const hireEl = document.querySelector('[data-test="client-stats"]') || document.querySelector('.fe-client-stats');
-      if (hireEl) {
-        const m = hireEl.innerText.match(/(\d+)%/);
+      const el = document.querySelector('[data-test="hire-rate"]') || 
+                 document.querySelector('[data-qa="client-hire-rate"]') ||
+                 document.querySelector('[data-test="client-stats"]');
+      if (el) {
+        const m = el.innerText.match(/(\d+)%/);
         if (m) hireRate = parseInt(m[1], 10);
       }
     }
 
     // Scrape Average Pay Rate (e.g., "$25.00/hr avg hourly rate paid" or "$25.50 average hourly rate paid")
     let avgPayRate = null;
-    const payRateMatch = pageText.match(/\$(\d+(?:\.\d+)?)\/hr\s+avg\s+hourly/i) || 
-                         pageText.match(/\$(\d+(?:\.\d+)?)\s+average\s+hourly/i);
+    const payRateMatch = clientText.match(/\$(\d+(?:\.\d+)?)\/hr\s*(?:avg|average)/i) || 
+                         clientText.match(/\$(\d+(?:\.\d+)?)\s*(?:average|avg)\s*hourly/i) ||
+                         clientText.match(/average\s*hourly\s*rate:\s*\$(\d+(?:\.\d+)?)/i) ||
+                         clientText.match(/\$(\d+(?:\.\d+)?)\/hr/i);
     if (payRateMatch) {
       avgPayRate = parseFloat(payRateMatch[1]);
     } else {
-      // Search for any pattern like "$12.34/hr avg"
-      const m = pageText.match(/\$(\d+(?:\.\d+)?)\/hr/i);
-      if (m) avgPayRate = parseFloat(m[1]);
+      const el = document.querySelector('[data-test="avg-hourly-rate"]') || 
+                 document.querySelector('[data-qa="client-hourly-rate"]');
+      if (el) {
+        const m = el.innerText.match(/\$(\d+(?:\.\d+)?)/);
+        if (m) avgPayRate = parseFloat(m[1]);
+      }
+    }
+
+    // Scrape Total Spend (e.g. "$100k+ total spend", "$500+ spent")
+    let totalSpend = null;
+    const spendMatch = clientText.match(/\$(\d+(?:\.\d+)?(?:k|m|b)?\+?)\s*(?:total\s*spend|spent|spend)/i) ||
+                       clientText.match(/(?:total\s*spend|spent):\s*\$(\d+(?:\.\d+)?(?:k|m|b)?\+?)/i);
+    if (spendMatch) {
+      totalSpend = spendMatch[1];
+    } else {
+      const el = document.querySelector('[data-test="client-spend"]') || 
+                 document.querySelector('[data-qa="client-spend"]');
+      if (el) {
+        totalSpend = el.innerText.replace(/(total spend|spent|spend)/gi, '').trim();
+      }
+    }
+
+    // Scrape Client Star Rating (e.g. "4.89 of 5 stars", "4.9 stars")
+    let rating = null;
+    const ratingMatch = clientText.match(/(\d\.\d\d?)\s*(?:of\s*5\s*stars|stars|rating)/i) ||
+                        clientText.match(/(?:rating|score):\s*(\d\.\d\d?)/i);
+    if (ratingMatch) {
+      rating = parseFloat(ratingMatch[1]);
+    } else {
+      const el = document.querySelector('[data-test="client-rating"]') || 
+                 document.querySelector('.air3-rating') ||
+                 document.querySelector('.fe-client-rating');
+      if (el) {
+        const m = el.innerText.match(/(\d\.\d\d?)/);
+        if (m) rating = parseFloat(m[1]);
+      }
     }
 
     // Payment Verification Status
-    const isPaymentVerified = pageText.toLowerCase().includes('payment verified') || 
+    const isPaymentVerified = clientText.toLowerCase().includes('payment verified') || 
+                              clientText.toLowerCase().includes('payment method verified') ||
                               !!document.querySelector('[data-qa="payment-verified"]') ||
-                              !!document.querySelector('.payment-verified');
+                              !!document.querySelector('.payment-verified') ||
+                              !!document.querySelector('.air3-icon-verified') ||
+                              clientText.toLowerCase().includes('verified payment');
+
+    // Scrape Client Country/Location
+    let location = 'Unknown Location';
+    const locEl = document.querySelector('[data-qa="client-location"]') || 
+                  document.querySelector('[data-test="client-country"]') ||
+                  document.querySelector('.fe-client-location');
+    if (locEl) {
+      location = locEl.textContent.trim().replace(/^(location|client's location):?/i, '').trim();
+    } else {
+      const locMatch = clientText.match(/client's\s*local\s*time.*?in\s*([a-zA-Z\s,]+)/i);
+      if (locMatch) {
+        location = locMatch[1].trim();
+      }
+    }
 
     scrapedData = {
       title,
       description,
       client: {
+        circle: null,
         hireRate,
         avgPayRate,
-        paymentVerified: isPaymentVerified
+        totalSpend: totalSpend || 'N/A',
+        rating: rating || null,
+        paymentVerified: isPaymentVerified,
+        location
       }
     };
 
-    console.log('BidIQ Scraped Data:', scrapedData);
+    console.log('BidIQ Advanced Scraped Data:', scrapedData);
 
     // 4. Update UI with scraped data
     updateUI(scrapedData.client);
@@ -376,40 +603,60 @@
     chrome.runtime.sendMessage({ action: 'UPDATE_STATS', type: 'analyzed' });
   }
 
-  // Update the Risk Assessor card components
+  // Update the Risk Assessor card components dynamically
   function updateUI(client) {
     const valHireRate = shadowRoot.getElementById('val-hire-rate');
     const valPayRate = shadowRoot.getElementById('val-pay-rate');
+    const valTotalSpend = shadowRoot.getElementById('val-total-spend');
+    const valRating = shadowRoot.getElementById('val-rating');
+    const valLocation = shadowRoot.getElementById('val-client-location');
+    const valPaymentStatus = shadowRoot.getElementById('val-payment-status');
+    
     const cardHireRate = shadowRoot.getElementById('card-hire-rate');
     const cardPayRate = shadowRoot.getElementById('card-pay-rate');
+    const cardSpend = shadowRoot.getElementById('card-total-spend');
+    const cardRating = shadowRoot.getElementById('card-rating');
+    
     const valRiskLevel = shadowRoot.getElementById('val-risk-level');
     const valRiskFactors = shadowRoot.getElementById('val-risk-factors');
+    const toneLockBadge = shadowRoot.getElementById('tone-lock-badge');
 
-    // Reset styles
-    cardHireRate.className = 'risk-stat-card';
-    cardPayRate.className = 'risk-stat-card';
+    // Reset card highlight classes
+    [cardHireRate, cardPayRate, cardSpend, cardRating].forEach(card => {
+      card.className = 'risk-stat-card';
+    });
     valRiskFactors.innerHTML = '';
 
     const factors = [];
 
-    // Process Hire Rate
+    // Check license locally to toggle lock visibility in the side panel
+    chrome.storage.local.get(['licenseKey', 'instanceId'], (settings) => {
+      const isPremium = settings.licenseKey && (settings.licenseKey.trim().toUpperCase().startsWith('BIDIQ-PREM-') || settings.instanceId);
+      if (isPremium) {
+        toneLockBadge.style.display = 'none';
+      } else {
+        toneLockBadge.style.display = 'inline';
+      }
+    });
+
+    // 1. Process Hire Rate
     if (client.hireRate !== null) {
       valHireRate.textContent = `${client.hireRate}%`;
       if (client.hireRate >= 70) {
         cardHireRate.classList.add('emerald');
       } else if (client.hireRate >= 45) {
         cardHireRate.classList.add('amber');
-        factors.push({ type: 'warning', text: `Moderate Hire Rate (${client.hireRate}%) - client open to hiring but selective.` });
+        factors.push({ type: 'warning', text: `Moderate Hire Rate (${client.hireRate}%) - client is selective.` });
       } else {
         cardHireRate.classList.add('rose');
         factors.push({ type: 'danger', text: `Low Hire Rate (${client.hireRate}%) - client posts but rarely hires.` });
       }
     } else {
       valHireRate.textContent = 'N/A';
-      factors.push({ type: 'warning', text: 'No hire rate history available (New client or private job).' });
+      factors.push({ type: 'warning', text: 'No hire rate history available (New client or private post).' });
     }
 
-    // Process Pay Rate
+    // 2. Process Pay Rate
     if (client.avgPayRate !== null) {
       valPayRate.textContent = `$${client.avgPayRate.toFixed(2)}`;
       if (client.avgPayRate >= 30) {
@@ -418,15 +665,62 @@
         cardPayRate.classList.add('amber');
       } else {
         cardPayRate.classList.add('rose');
-        factors.push({ type: 'warning', text: `Low Average Pay Rate ($${client.avgPayRate.toFixed(2)}/hr) - client has budget-sensitive history.` });
+        factors.push({ type: 'warning', text: `Low Average Pay Rate ($${client.avgPayRate.toFixed(2)}/hr) - budget-conscious history.` });
       }
     } else {
       valPayRate.textContent = 'N/A';
     }
 
-    // Process Payment Verification
-    if (!client.paymentVerified) {
-      factors.push({ type: 'danger', text: 'Payment Method Unverified - higher risk of project suspension.' });
+    // 3. Process Total Spend
+    valTotalSpend.textContent = client.totalSpend;
+    if (client.totalSpend !== 'N/A' && client.totalSpend !== '$0') {
+      const spendNumber = parseFloat(client.totalSpend.replace(/[^0-9.]/g, ''));
+      const isThousand = client.totalSpend.toLowerCase().includes('k');
+      const isMillion = client.totalSpend.toLowerCase().includes('m');
+      
+      let estimatedVal = spendNumber;
+      if (isThousand) estimatedVal *= 1000;
+      if (isMillion) estimatedVal *= 1000000;
+
+      if (estimatedVal >= 10000) {
+        cardSpend.classList.add('emerald');
+      } else if (estimatedVal >= 1000) {
+        cardSpend.classList.add('amber');
+      } else {
+        cardSpend.classList.add('rose');
+        factors.push({ type: 'warning', text: `Low Total Spend History (${client.totalSpend}) - client is relatively new/small spend.` });
+      }
+    } else {
+      cardSpend.classList.add('rose');
+      factors.push({ type: 'warning', text: 'No project spending history on Upwork yet.' });
+    }
+
+    // 4. Process Rating
+    if (client.rating !== null) {
+      valRating.textContent = client.rating.toFixed(1);
+      if (client.rating >= 4.7) {
+        cardRating.classList.add('emerald');
+      } else if (client.rating >= 4.0) {
+        cardRating.classList.add('amber');
+        factors.push({ type: 'warning', text: `Average Client Rating is ${client.rating.toFixed(2)} - check previous freelancer feedback.` });
+      } else {
+        cardRating.classList.add('rose');
+        factors.push({ type: 'danger', text: `Bad Client Rating (${client.rating.toFixed(2)}) - high risk of poor feedback/disputes.` });
+      }
+    } else {
+      valRating.textContent = 'N/A';
+    }
+
+    // 5. Update Location & Payment Verification Status
+    valLocation.textContent = `📍 ${client.location}`;
+    
+    if (client.paymentVerified) {
+      valPaymentStatus.textContent = '💳 Verified';
+      valPaymentStatus.style.color = '#10b981';
+    } else {
+      valPaymentStatus.textContent = '💳 Unverified';
+      valPaymentStatus.style.color = '#ef4444';
+      factors.push({ type: 'danger', text: 'Payment Method Unverified - high risk of invoice suspension.' });
     }
 
     // Determine aggregate Risk Badge

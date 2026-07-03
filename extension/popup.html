@@ -48,25 +48,54 @@
 
     <!-- Main Content -->
     <main class="main-content">
+      <!-- 1. License & Billing Card -->
+      <div class="card billing-card" id="billing-card">
+        <h2>License & Status</h2>
+        <p class="description">Upgrade to unlock custom resume matching and unlimited proposals.</p>
+        
+        <div class="form-group">
+          <label for="license-key">License Key</label>
+          <div class="input-wrapper">
+            <input type="text" id="license-key" placeholder="Enter BIDIQ-PREM- key">
+            <button class="btn-check" id="btn-verify-license" title="Verify License">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+          </div>
+          <div class="license-status-badge" id="license-badge">Free Tier (3/day)</div>
+        </div>
+
+        <div class="upgrade-btn-wrapper" id="upgrade-btn-wrapper">
+          <a href="https://bidiq.lemonsqueezy.com" target="_blank" class="btn-upgrade">
+            ✨ Get Premium License ($9/mo)
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. Connection Settings Card -->
       <div class="card settings-card">
         <h2>Backend Settings</h2>
         <p class="description">Configure the secure proposal generator endpoint.</p>
         
         <div class="form-group">
-          <label for="backend-url">Next.js API Base URL</label>
+          <label for="backend-url">Express API Base URL</label>
           <div class="input-wrapper">
-            <input type="url" id="backend-url" placeholder="http://localhost:3000" value="http://localhost:3000">
+            <input type="url" id="backend-url" placeholder="http://localhost:3001" value="http://localhost:3001">
             <button class="btn-check" id="btn-test-connection" title="Test Connection">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 6L9 17l-5-5"/>
+                <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </button>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="default-tone">Default Proposal Tone</label>
-          <select id="default-tone">
+        <div class="form-group premium-gated" id="tone-group">
+          <label for="default-tone">
+            Default Proposal Tone 
+            <span class="lock-badge" id="tone-lock">🔒 Pro</span>
+          </label>
+          <select id="default-tone" disabled>
             <option value="professional">💼 Professional (Expert & Structured)</option>
             <option value="conversational" selected>🤝 Conversational (Friendly & Direct)</option>
             <option value="technical">💻 Technical (Detailed & Solution-oriented)</option>
@@ -75,7 +104,20 @@
         </div>
       </div>
 
-      <!-- Quick Stats / Status -->
+      <!-- 3. Professional Profile Context Card -->
+      <div class="card profile-card premium-gated" id="profile-card-gated">
+        <h2>
+          Professional Context 
+          <span class="lock-badge" id="profile-lock">🔒 Pro</span>
+        </h2>
+        <p class="description">Paste your resume or custom bio. The AI will align proposal drafts to your background.</p>
+        
+        <div class="form-group">
+          <textarea id="user-profile" placeholder="Name: Muhammad Din&#10;Role: Senior AI Engineer..." disabled></textarea>
+        </div>
+      </div>
+
+      <!-- 4. Quick Stats / Status -->
       <div class="stats-row">
         <div class="stat-box">
           <span class="stat-label">Jobs Analyzed</span>
