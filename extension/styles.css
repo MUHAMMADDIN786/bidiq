@@ -1,0 +1,475 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:host {
+  --bidiq-font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --bidiq-font-display: 'Outfit', sans-serif;
+  --bidiq-bg: rgba(9, 13, 22, 0.95);
+  --bidiq-card-bg: rgba(255, 255, 255, 0.03);
+  --bidiq-card-hover: rgba(255, 255, 255, 0.05);
+  --bidiq-border: rgba(255, 255, 255, 0.08);
+  --bidiq-text-main: #f8fafc;
+  --bidiq-text-muted: #94a3b8;
+  --bidiq-primary: #6366f1;
+  --bidiq-secondary: #a855f7;
+  --bidiq-accent-grad: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --bidiq-success: #10b981;
+  --bidiq-warning: #f59e0b;
+  --bidiq-danger: #ef4444;
+  --bidiq-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+  
+  font-family: var(--bidiq-font);
+  color: var(--bidiq-text-main);
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Floating Trigger Button */
+.bidiq-trigger {
+  position: fixed;
+  right: 0;
+  top: 15%;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bidiq-accent-grad);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 24px 0 0 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--bidiq-font-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: none;
+  transform: translateX(10px);
+}
+
+.bidiq-trigger:hover {
+  transform: translateX(0);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6);
+  padding-left: 20px;
+}
+
+.bidiq-trigger-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bidiq-trigger-icon svg {
+  animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.4)); }
+  50% { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8)); }
+  100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.4)); }
+}
+
+/* Slide-out Sidebar Panel */
+.bidiq-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  height: 100vh;
+  z-index: 2147483646;
+  background: var(--bidiq-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid var(--bidiq-border);
+  box-shadow: var(--bidiq-shadow);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.bidiq-panel.open {
+  transform: translateX(0);
+}
+
+/* Header */
+.bidiq-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--bidiq-border);
+}
+
+.bidiq-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bidiq-logo-text {
+  font-family: var(--bidiq-font-display);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+}
+
+.bidiq-logo-text span {
+  background: var(--bidiq-accent-grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bidiq-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--bidiq-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.bidiq-close-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--bidiq-text-main);
+  transform: rotate(90deg);
+}
+
+/* Scrollable Container */
+.bidiq-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Section Cards */
+.bidiq-card {
+  background: var(--bidiq-card-bg);
+  border: 1px solid var(--bidiq-border);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.bidiq-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: var(--bidiq-card-hover);
+}
+
+.bidiq-section-title {
+  font-family: var(--bidiq-font-display);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--bidiq-text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Client Risk Assessor UI */
+.risk-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.risk-stat-card {
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--bidiq-border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.risk-stat-value {
+  font-family: var(--bidiq-font-display);
+  font-size: 22px;
+  font-weight: 800;
+  margin: 4px 0;
+}
+
+.risk-stat-label {
+  font-size: 11px;
+  color: var(--bidiq-text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Hire rate circular visual (represented as gradient borders) */
+.risk-stat-card.emerald { border-bottom: 3px solid var(--bidiq-success); }
+.risk-stat-card.amber { border-bottom: 3px solid var(--bidiq-warning); }
+.risk-stat-card.rose { border-bottom: 3px solid var(--bidiq-danger); }
+
+.risk-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+}
+
+.risk-badge.safe {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--bidiq-success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.risk-badge.warning {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--bidiq-warning);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.risk-badge.danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--bidiq-danger);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  animation: glow-red 2s infinite alternate;
+}
+
+@keyframes glow-red {
+  0% { box-shadow: 0 0 2px rgba(239, 68, 68, 0.2); }
+  100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+}
+
+.risk-factors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.risk-factor-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--bidiq-text-muted);
+}
+
+.risk-factor-item.warning {
+  color: #fed7aa;
+}
+
+.risk-factor-item svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* AI Proposal Generator UI */
+.bidiq-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bidiq-option-label {
+  font-size: 11px;
+  color: var(--bidiq-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bidiq-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.bidiq-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--bidiq-border);
+  color: var(--bidiq-text-muted);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bidiq-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--bidiq-text-main);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.bidiq-chip.active {
+  background: var(--bidiq-accent-grad);
+  border-color: transparent;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+}
+
+.bidiq-textarea-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.bidiq-proposal-textarea {
+  width: 100%;
+  height: 220px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--bidiq-border);
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--bidiq-text-main);
+  font-family: var(--bidiq-font);
+  font-size: 12.5px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.bidiq-proposal-textarea:focus {
+  border-color: var(--bidiq-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Primary Action Button */
+.bidiq-btn-primary {
+  background: var(--bidiq-accent-grad);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-family: var(--bidiq-font-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.bidiq-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.bidiq-btn-primary:active {
+  transform: translateY(1px);
+}
+
+.bidiq-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Loading overlay / spinner */
+.loader-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Clipboard / Utility Buttons */
+.bidiq-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.bidiq-btn-secondary {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--bidiq-border);
+  color: var(--bidiq-text-main);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.bidiq-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Success notification toast */
+.bidiq-toast {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(40px);
+  background: #10b981;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: none;
+  z-index: 100;
+}
+
+.bidiq-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* Custom Scrollbar for side panel */
+.bidiq-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bidiq-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bidiq-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.bidiq-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}

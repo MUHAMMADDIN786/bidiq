@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BidIQ Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#logo-grad-1)"/>
+            <path d="M2 17L12 22L22 17" stroke="url(#logo-grad-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="url(#logo-grad-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="logo-grad-1" x1="2" y1="2" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#a855f7"/>
+              </linearGradient>
+              <linearGradient id="logo-grad-2" x1="2" y1="12" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#a855f7"/>
+                <stop offset="1" stop-color="#ec4899"/>
+              </linearGradient>
+              <linearGradient id="logo-grad-3" x1="2" y1="12" x2="22" y2="17" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#ec4899"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <h1>Bid<span>IQ</span></h1>
+          <span class="version">v1.0.0</span>
+        </div>
+      </div>
+      <div class="status-indicator">
+        <div class="status-dot pinging" id="connection-dot"></div>
+        <span id="connection-text">Checking...</span>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="card settings-card">
+        <h2>Backend Settings</h2>
+        <p class="description">Configure the secure proposal generator endpoint.</p>
+        
+        <div class="form-group">
+          <label for="backend-url">Next.js API Base URL</label>
+          <div class="input-wrapper">
+            <input type="url" id="backend-url" placeholder="http://localhost:3000" value="http://localhost:3000">
+            <button class="btn-check" id="btn-test-connection" title="Test Connection">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="default-tone">Default Proposal Tone</label>
+          <select id="default-tone">
+            <option value="professional">💼 Professional (Expert & Structured)</option>
+            <option value="conversational" selected>🤝 Conversational (Friendly & Direct)</option>
+            <option value="technical">💻 Technical (Detailed & Solution-oriented)</option>
+            <option value="persuasive">🔥 Persuasive (Value-focused & Bold)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick Stats / Status -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-label">Jobs Analyzed</span>
+          <span class="stat-value" id="stat-analyzed">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Proposals Generated</span>
+          <span class="stat-value" id="stat-generated">0</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-links">
+        <a href="https://github.com" target="_blank">Documentation</a>
+        <span class="dot-separator">•</span>
+        <a href="#" id="reset-settings">Reset Defaults</a>
+      </div>
+      <div class="footer-tag">Made for Upwork freelancers</div>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
