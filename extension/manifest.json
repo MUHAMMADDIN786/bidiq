@@ -8,7 +8,8 @@
   ],
   "host_permissions": [
     "https://*.upwork.com/*",
-    "http://localhost:3001/*"
+    "http://localhost:3001/*",
+    "https://bidiq-o62g.onrender.com/*"
   ],
   "action": {
     "default_popup": "popup.html",

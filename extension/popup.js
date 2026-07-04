@@ -52,7 +52,7 @@ Core Expertise:
     if (data.backendUrl) {
       backendUrlInput.value = data.backendUrl;
     } else {
-      backendUrlInput.value = 'http://localhost:3001';
+      backendUrlInput.value = 'https://bidiq-o62g.onrender.com';
     }
 
     // Default Tone
@@ -134,20 +134,20 @@ Core Expertise:
   // Reset defaults
   resetSettingsLink.addEventListener('click', (e) => {
     e.preventDefault();
-    backendUrlInput.value = 'http://localhost:3001';
+    backendUrlInput.value = 'https://bidiq-o62g.onrender.com';
     defaultToneSelect.value = 'conversational';
     userProfileTextarea.value = defaultProfile;
     licenseKeyInput.value = '';
     currentInstanceId = '';
     
     chrome.storage.local.set({
-      backendUrl: 'http://localhost:3001',
+      backendUrl: 'https://bidiq-o62g.onrender.com',
       defaultTone: 'conversational',
       userProfile: defaultProfile,
       licenseKey: '',
       instanceId: ''
     }, () => {
-      checkConnection('http://localhost:3001');
+      checkConnection('https://bidiq-o62g.onrender.com');
       setLicenseState(false);
     });
   });
