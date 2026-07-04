@@ -151,12 +151,6 @@
             <div class="bidiq-logo-text">Bid<span>IQ</span></div>
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
-            <button class="bidiq-settings-btn" id="bidiq-settings-btn" title="Settings">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-              </svg>
-            </button>
             <button class="bidiq-refresh-btn" id="bidiq-refresh-btn" title="Refresh/Rescrape Page" style="transform:none; border-radius:50%;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
@@ -172,7 +166,7 @@
         </header>
 
         <div class="bidiq-body">
-          <!-- Client Risk Assessor Card -->
+          <!-- 1. Client Risk Assessor Card -->
           <div class="bidiq-card">
             <div class="bidiq-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -215,7 +209,39 @@
             </div>
           </div>
 
-          <!-- Proposal Draft Generator Card -->
+          <!-- 2. Freelancer Context Card (Hybrid Info) -->
+          <div class="bidiq-card premium-gated" id="sidebar-profile-card">
+            <div class="bidiq-section-title" style="display:flex; justify-content:space-between; width:100%;">
+              <span style="display:flex; align-items:center; gap:6px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Freelancer Context
+              </span>
+              <span class="lock-indicator" id="profile-lock-badge" style="color:#fb923c; font-size:9.5px; font-weight:700;">🔒 Pro gated</span>
+            </div>
+
+            <!-- Scraped Info Row (Hybrid Baseline) -->
+            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--bidiq-border); padding:10px; border-radius:8px; display:flex; flex-direction:column; gap:6px; font-size:11px;">
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--bidiq-text-muted);">Scraped Title:</span>
+                <span id="sidebar-scraped-title" style="font-weight:600; color:var(--bidiq-text-main); text-align:right; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Searching...</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:var(--bidiq-text-muted);">Scraped Bid Rate:</span>
+                <span id="sidebar-scraped-rate" style="font-weight:600; color:var(--bidiq-text-main);">Searching...</span>
+              </div>
+            </div>
+
+            <!-- Custom Bio Input -->
+            <div class="bidiq-option-group">
+              <div class="bidiq-option-label" style="font-size:11px; margin-bottom:4px; line-height:1.4;">Custom Resume Highlights / Portfolio (Optional):</div>
+              <textarea id="sidebar-user-profile" style="width:100%; height:110px; background:rgba(255,255,255,0.03); border:1px solid var(--bidiq-border); border-radius:10px; padding:8px 10px; color:var(--bidiq-text-main); font-size:11px; font-family:var(--bidiq-font); resize:none; outline:none; line-height:1.4;" placeholder="Paste details about your highlights, bio, or past work here to guide the AI proposal generator."></textarea>
+            </div>
+          </div>
+
+          <!-- 3. Proposal Draft Generator Card -->
           <div class="bidiq-card">
             <div class="bidiq-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -268,23 +294,20 @@
               </button>
             </div>
           </div>
-        </div>
 
-        <!-- Settings Panel (Toggled View) -->
-        <div class="bidiq-settings-body" id="bidiq-settings-page" style="display: none;">
+          <!-- 4. License & Status Card -->
           <div class="bidiq-card">
             <div class="bidiq-section-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
-              License & Settings
+              License & Status
             </div>
             
             <div class="bidiq-option-group">
-              <div class="bidiq-option-label">License Key</div>
               <div style="display:flex; gap:8px;">
-                <input type="text" id="sidebar-license-key" placeholder="Enter BIDIQ-PREM- key" style="flex:1; background:rgba(255,255,255,0.03); border:1px solid var(--bidiq-border); border-radius:8px; padding:8px 12px; color:var(--bidiq-text-main); font-size:12px; font-family:var(--bidiq-font);">
+                <input type="text" id="sidebar-license-key" placeholder="Enter BIDIQ-PREM- key" style="flex:1; background:rgba(255,255,255,0.03); border:1px solid var(--bidiq-border); border-radius:8px; padding:8px 12px; color:var(--bidiq-text-main); font-size:11px; font-family:var(--bidiq-font); outline:none;">
                 <button id="sidebar-btn-verify-license" class="bidiq-btn-secondary" style="padding:0 12px; height:34px; border-radius:8px; margin:0; flex-shrink:0;">Verify</button>
               </div>
               <div id="sidebar-license-badge" style="font-size:11px; margin-top:4px; font-weight:600; color:var(--bidiq-text-muted);">Checking status...</div>
@@ -294,25 +317,6 @@
               </div>
             </div>
           </div>
-
-          <div class="bidiq-card">
-            <div class="bidiq-section-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10 9 9 9 8 9"></polyline>
-              </svg>
-              Professional Context
-            </div>
-            <div style="font-size:11px; color:var(--bidiq-text-muted); margin-bottom:4px; line-height:1.4;">Paste your resume or bio. The AI will align proposal drafts to match your experience.</div>
-            <textarea id="sidebar-user-profile" style="width:100%; height:160px; background:rgba(255,255,255,0.03); border:1px solid var(--bidiq-border); border-radius:12px; padding:10px; color:var(--bidiq-text-main); font-size:11px; font-family:var(--bidiq-font); resize:none; outline:none; line-height:1.4;" placeholder="My resume context..."></textarea>
-          </div>
-
-          <button class="bidiq-btn-primary" id="sidebar-btn-back" style="margin-top:auto;">
-            Save & Back
-          </button>
         </div>
       </div>
     `;
@@ -336,48 +340,29 @@
     const toneChips = shadowRoot.querySelectorAll('#tone-chips .bidiq-chip');
     const focusChips = shadowRoot.querySelectorAll('#focus-chips .bidiq-chip');
 
-    // Settings view toggle and verify logic
-    const settingsBtn = shadowRoot.getElementById('bidiq-settings-btn');
-    const mainBody = shadowRoot.querySelector('.bidiq-body');
-    const settingsPage = shadowRoot.getElementById('bidiq-settings-page');
-    const btnBack = shadowRoot.getElementById('sidebar-btn-back');
     const btnVerifySidebar = shadowRoot.getElementById('sidebar-btn-verify-license');
     const inputSidebarKey = shadowRoot.getElementById('sidebar-license-key');
     const textareaProfile = shadowRoot.getElementById('sidebar-user-profile');
-    let inSettings = false;
 
-    function toggleSettingsView() {
-      inSettings = !inSettings;
-      if (inSettings) {
-        mainBody.style.display = 'none';
-        settingsPage.style.display = 'flex';
-        settingsBtn.classList.add('active');
-        loadSidebarSettings();
-      } else {
-        // Save user profile state
+    // Save profile context on input change
+    if (textareaProfile) {
+      textareaProfile.addEventListener('input', () => {
         chrome.storage.local.set({ userProfile: textareaProfile.value });
-        
-        mainBody.style.display = 'flex';
-        settingsPage.style.display = 'none';
-        settingsBtn.classList.remove('active');
-        
-        // Re-scrape / re-sync locks in the main view
-        chrome.storage.local.get(['licenseKey', 'instanceId'], (settings) => {
-          const isPremium = settings.licenseKey && (settings.licenseKey.trim().toUpperCase().startsWith('BIDIQ-PREM-') || settings.instanceId);
-          const toneLockBadge = shadowRoot.getElementById('tone-lock-badge');
-          if (toneLockBadge) {
-            toneLockBadge.style.display = isPremium ? 'none' : 'inline';
-          }
-        });
-      }
+      });
     }
 
-    if (settingsBtn) settingsBtn.addEventListener('click', toggleSettingsView);
-    if (btnBack) btnBack.addEventListener('click', toggleSettingsView);
-
+    // Verify license button
     if (btnVerifySidebar) {
       btnVerifySidebar.addEventListener('click', () => {
         verifySidebarLicenseKey(inputSidebarKey.value.trim());
+      });
+    }
+
+    if (inputSidebarKey) {
+      inputSidebarKey.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          verifySidebarLicenseKey(inputSidebarKey.value.trim());
+        }
       });
     }
 
@@ -386,6 +371,10 @@
       panel.classList.add('open');
       toggleBtn.style.opacity = '0';
       toggleBtn.style.pointerEvents = 'none';
+      
+      // Refresh local settings in side panel
+      loadSidebarSettings();
+      
       // Force rescrape when opening panel
       processPage();
     });
@@ -521,6 +510,9 @@
         alert('Could not find cover letter field. Please copy and paste the draft manually.');
       }
     });
+
+    // Initial load of settings and limits UI inside side panel
+    loadSidebarSettings();
   }
 
   function setupChips(chips, isTone = false) {
