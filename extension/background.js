@@ -30,7 +30,7 @@ async function generateProposal({
   instanceId,
   freelancerScrapedInfo 
 }) {
-  const cleanUrl = (backendUrl || 'https://bidiq-o62g.onrender.com').replace(/\/$/, '');
+  const cleanUrl = (backendUrl || 'https://bidiq-o52g.onrender.com').replace(/\/$/, '');
   const endpoint = `${cleanUrl}/api/generate-proposal`;
 
   try {

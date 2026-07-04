@@ -326,7 +326,7 @@
 
       // Load Settings from storage
       chrome.storage.local.get(['backendUrl', 'userProfile', 'clientUid', 'licenseKey', 'instanceId'], async (settings) => {
-        const backendUrl = settings.backendUrl || 'https://bidiq-o62g.onrender.com';
+        const backendUrl = settings.backendUrl || 'https://bidiq-o52g.onrender.com';
         
         // Generate Client ID if missing (ensuring limit tracking works even if popup hasn't opened)
         let clientUid = settings.clientUid;
