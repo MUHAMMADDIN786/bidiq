@@ -548,7 +548,7 @@
     const licenseCard = shadowRoot.querySelector('.bidiq-card:last-child');
     const licenseInput = shadowRoot.getElementById('sidebar-license-key');
     if (licenseCard) {
-      licenseCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      licenseCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     if (licenseInput) {
       licenseInput.focus();
