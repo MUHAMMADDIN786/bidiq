@@ -151,6 +151,12 @@
             <div class="bidiq-logo-text">Bid<span>IQ</span></div>
           </div>
           <div style="display:flex; align-items:center; gap:8px;">
+            <button class="bidiq-settings-btn" id="bidiq-settings-btn" title="Settings">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+            </button>
             <button class="bidiq-refresh-btn" id="bidiq-refresh-btn" title="Refresh/Rescrape Page" style="transform:none; border-radius:50%;">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
@@ -263,6 +269,51 @@
             </div>
           </div>
         </div>
+
+        <!-- Settings Panel (Toggled View) -->
+        <div class="bidiq-settings-body" id="bidiq-settings-page" style="display: none;">
+          <div class="bidiq-card">
+            <div class="bidiq-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              License & Settings
+            </div>
+            
+            <div class="bidiq-option-group">
+              <div class="bidiq-option-label">License Key</div>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="sidebar-license-key" placeholder="Enter BIDIQ-PREM- key" style="flex:1; background:rgba(255,255,255,0.03); border:1px solid var(--bidiq-border); border-radius:8px; padding:8px 12px; color:var(--bidiq-text-main); font-size:12px; font-family:var(--bidiq-font);">
+                <button id="sidebar-btn-verify-license" class="bidiq-btn-secondary" style="padding:0 12px; height:34px; border-radius:8px; margin:0; flex-shrink:0;">Verify</button>
+              </div>
+              <div id="sidebar-license-badge" style="font-size:11px; margin-top:4px; font-weight:600; color:var(--bidiq-text-muted);">Checking status...</div>
+              
+              <div id="sidebar-upgrade-btn-wrapper" style="margin-top:10px;">
+                <a href="https://bidiq.lemonsqueezy.com" target="_blank" class="bidiq-btn-primary" style="display:block; text-align:center; text-decoration:none; padding:10px; font-size:12px; font-weight:700; border-radius:8px; background:linear-gradient(135deg, #ec4899 0%, #a855f7 100%);">✨ Get Premium License ($9/mo)</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="bidiq-card">
+            <div class="bidiq-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+              Professional Context
+            </div>
+            <div style="font-size:11px; color:var(--bidiq-text-muted); margin-bottom:4px; line-height:1.4;">Paste your resume or bio. The AI will align proposal drafts to match your experience.</div>
+            <textarea id="sidebar-user-profile" style="width:100%; height:160px; background:rgba(255,255,255,0.03); border:1px solid var(--bidiq-border); border-radius:12px; padding:10px; color:var(--bidiq-text-main); font-size:11px; font-family:var(--bidiq-font); resize:none; outline:none; line-height:1.4;" placeholder="My resume context..."></textarea>
+          </div>
+
+          <button class="bidiq-btn-primary" id="sidebar-btn-back" style="margin-top:auto;">
+            Save & Back
+          </button>
+        </div>
       </div>
     `;
 
@@ -284,6 +335,51 @@
     const copyToast = shadowRoot.getElementById('copy-toast');
     const toneChips = shadowRoot.querySelectorAll('#tone-chips .bidiq-chip');
     const focusChips = shadowRoot.querySelectorAll('#focus-chips .bidiq-chip');
+
+    // Settings view toggle and verify logic
+    const settingsBtn = shadowRoot.getElementById('bidiq-settings-btn');
+    const mainBody = shadowRoot.querySelector('.bidiq-body');
+    const settingsPage = shadowRoot.getElementById('bidiq-settings-page');
+    const btnBack = shadowRoot.getElementById('sidebar-btn-back');
+    const btnVerifySidebar = shadowRoot.getElementById('sidebar-btn-verify-license');
+    const inputSidebarKey = shadowRoot.getElementById('sidebar-license-key');
+    const textareaProfile = shadowRoot.getElementById('sidebar-user-profile');
+    let inSettings = false;
+
+    function toggleSettingsView() {
+      inSettings = !inSettings;
+      if (inSettings) {
+        mainBody.style.display = 'none';
+        settingsPage.style.display = 'flex';
+        settingsBtn.classList.add('active');
+        loadSidebarSettings();
+      } else {
+        // Save user profile state
+        chrome.storage.local.set({ userProfile: textareaProfile.value });
+        
+        mainBody.style.display = 'flex';
+        settingsPage.style.display = 'none';
+        settingsBtn.classList.remove('active');
+        
+        // Re-scrape / re-sync locks in the main view
+        chrome.storage.local.get(['licenseKey', 'instanceId'], (settings) => {
+          const isPremium = settings.licenseKey && (settings.licenseKey.trim().toUpperCase().startsWith('BIDIQ-PREM-') || settings.instanceId);
+          const toneLockBadge = shadowRoot.getElementById('tone-lock-badge');
+          if (toneLockBadge) {
+            toneLockBadge.style.display = isPremium ? 'none' : 'inline';
+          }
+        });
+      }
+    }
+
+    if (settingsBtn) settingsBtn.addEventListener('click', toggleSettingsView);
+    if (btnBack) btnBack.addEventListener('click', toggleSettingsView);
+
+    if (btnVerifySidebar) {
+      btnVerifySidebar.addEventListener('click', () => {
+        verifySidebarLicenseKey(inputSidebarKey.value.trim());
+      });
+    }
 
     // Slide panel open/close
     toggleBtn.addEventListener('click', () => {
@@ -762,6 +858,101 @@
         valRiskFactors.appendChild(item);
       });
     }
+  }
+
+  function loadSidebarSettings() {
+    chrome.storage.local.get(['licenseKey', 'userProfile', 'instanceId'], (settings) => {
+      const licenseInput = shadowRoot.getElementById('sidebar-license-key');
+      const profileTextarea = shadowRoot.getElementById('sidebar-user-profile');
+      
+      if (licenseInput) {
+        licenseInput.value = settings.licenseKey || '';
+      }
+      if (profileTextarea) {
+        profileTextarea.value = settings.userProfile || '';
+      }
+      
+      updateSidebarLicenseUI(settings.licenseKey, settings.instanceId);
+    });
+  }
+
+  function updateSidebarLicenseUI(key, instanceId) {
+    const badge = shadowRoot.getElementById('sidebar-license-badge');
+    const upgradeWrapper = shadowRoot.getElementById('sidebar-upgrade-btn-wrapper');
+    const isPremium = key && (key.trim().toUpperCase().startsWith('BIDIQ-PREM-') || instanceId);
+
+    if (badge) {
+      if (isPremium) {
+        badge.textContent = 'Premium Active';
+        badge.style.color = '#10b981'; // Emerald
+        if (upgradeWrapper) upgradeWrapper.style.display = 'none';
+      } else {
+        badge.textContent = 'Free Tier (3/day)';
+        badge.style.color = '#94a3b8'; // Slate
+        if (upgradeWrapper) upgradeWrapper.style.display = 'block';
+      }
+    }
+  }
+
+  async function verifySidebarLicenseKey(key) {
+    const badge = shadowRoot.getElementById('sidebar-license-badge');
+    if (!key) {
+      chrome.storage.local.set({ licenseKey: '', instanceId: '' });
+      updateSidebarLicenseUI('', '');
+      return;
+    }
+
+    if (badge) {
+      badge.textContent = 'Verifying...';
+      badge.style.color = '#fb923c';
+    }
+
+    chrome.storage.local.get(['clientUid', 'instanceId'], async (store) => {
+      const backendUrl = 'https://bidiq-o52g.onrender.com';
+      try {
+        const verifyUrl = `${backendUrl}/api/verify-license`;
+        const response = await fetch(verifyUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ licenseKey: key, clientUid: store.clientUid, instanceId: store.instanceId })
+        });
+
+        const data = await response.json();
+        if (response.ok && data.valid) {
+          chrome.storage.local.set({ 
+            licenseKey: key, 
+            instanceId: data.instanceId || '' 
+          });
+          updateSidebarLicenseUI(key, data.instanceId);
+          
+          // Hide locks in main proposal view immediately
+          const toneLockBadge = shadowRoot.getElementById('tone-lock-badge');
+          if (toneLockBadge) toneLockBadge.style.display = 'none';
+        } else {
+          chrome.storage.local.set({ licenseKey: '', instanceId: '' });
+          updateSidebarLicenseUI('', '');
+          if (badge) {
+            badge.textContent = data.message || 'Invalid key.';
+            badge.style.color = '#ef4444';
+          }
+        }
+      } catch (e) {
+        console.warn('Sidebar validation failed, checking offline fallback:', e);
+        if (key.trim().toUpperCase().startsWith('BIDIQ-PREM-')) {
+          chrome.storage.local.set({ licenseKey: key, instanceId: '' });
+          updateSidebarLicenseUI(key, '');
+          const toneLockBadge = shadowRoot.getElementById('tone-lock-badge');
+          if (toneLockBadge) toneLockBadge.style.display = 'none';
+        } else {
+          chrome.storage.local.set({ licenseKey: '', instanceId: '' });
+          updateSidebarLicenseUI('', '');
+          if (badge) {
+            badge.textContent = 'Connection failed.';
+            badge.style.color = '#ef4444';
+          }
+        }
+      }
+    });
   }
 
   // Start initialization

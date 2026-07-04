@@ -491,3 +491,53 @@
 .bidiq-body::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
 }
+
+/* Settings Page Styling */
+.bidiq-settings-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bidiq-settings-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.bidiq-settings-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bidiq-settings-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.bidiq-settings-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.bidiq-settings-btn {
+  background: transparent;
+  border: none;
+  color: var(--bidiq-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.bidiq-settings-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--bidiq-text-main);
+}
+
+.bidiq-settings-btn.active {
+  color: var(--bidiq-primary);
+  background: rgba(99, 102, 241, 0.1);
+}
