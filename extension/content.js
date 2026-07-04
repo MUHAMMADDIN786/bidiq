@@ -210,7 +210,7 @@
           </div>
 
           <!-- 2. Freelancer Context Card (Hybrid Info) -->
-          <div class="bidiq-card premium-gated" id="sidebar-profile-card">
+          <div class="bidiq-card premium-gated collapsed" id="sidebar-profile-card">
             <div class="bidiq-section-title" style="display:flex; justify-content:space-between; width:100%;">
               <span style="display:flex; align-items:center; gap:6px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -296,7 +296,7 @@
           </div>
 
           <!-- 4. License & Status Card -->
-          <div class="bidiq-card">
+          <div class="bidiq-card collapsed" id="sidebar-license-card">
             <div class="bidiq-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -328,6 +328,35 @@
   }
 
   function setupPanelEvents() {
+    // Setup collapsible cards (accordion style)
+    const cards = shadowRoot.querySelectorAll('.bidiq-card');
+    cards.forEach(card => {
+      const title = card.querySelector('.bidiq-section-title');
+      if (title) {
+        // Create toggle arrow chevron
+        const chevron = document.createElement('span');
+        chevron.className = 'bidiq-card-toggle';
+        chevron.style.marginLeft = 'auto';
+        chevron.style.display = 'flex';
+        chevron.style.alignItems = 'center';
+        chevron.innerHTML = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        `;
+        title.appendChild(chevron);
+        title.style.cursor = 'pointer';
+        
+        title.addEventListener('click', (e) => {
+          // Prevent collapse if clicking input elements, buttons, or badges
+          if (e.target.closest('input') || e.target.closest('button') || e.target.closest('a') || e.target.closest('.lock-indicator')) {
+            return;
+          }
+          card.classList.toggle('collapsed');
+        });
+      }
+    });
+
     const toggleBtn = shadowRoot.getElementById('bidiq-toggle-btn');
     const closeBtn = shadowRoot.getElementById('bidiq-close-btn');
     const refreshBtn = shadowRoot.getElementById('bidiq-refresh-btn');
@@ -545,9 +574,10 @@
   }
 
   function highlightLicenseSection() {
-    const licenseCard = shadowRoot.querySelector('.bidiq-card:last-child');
+    const licenseCard = shadowRoot.getElementById('sidebar-license-card');
     const licenseInput = shadowRoot.getElementById('sidebar-license-key');
     if (licenseCard) {
+      licenseCard.classList.remove('collapsed');
       licenseCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     if (licenseInput) {

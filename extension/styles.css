@@ -541,3 +541,38 @@
   color: var(--bidiq-primary);
   background: rgba(99, 102, 241, 0.1);
 }
+
+/* Collapsible Card UX */
+.bidiq-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.bidiq-card.collapsed {
+  gap: 0;
+  padding-bottom: 12px;
+}
+
+.bidiq-card.collapsed > :not(.bidiq-section-title) {
+  display: none !important;
+}
+
+.bidiq-card-toggle {
+  cursor: pointer;
+  color: var(--bidiq-text-muted);
+  transition: transform 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.bidiq-card-toggle:hover {
+  color: var(--bidiq-text-main);
+}
+
+.bidiq-card.collapsed .bidiq-card-toggle {
+  transform: rotate(-90deg);
+}
+
+.bidiq-section-title {
+  user-select: none;
+  width: 100%;
+}
