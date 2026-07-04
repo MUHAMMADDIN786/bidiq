@@ -471,7 +471,13 @@
             // Track generated proposal in stats
             chrome.runtime.sendMessage({ action: 'UPDATE_STATS', type: 'generated' });
           } else {
-            proposalOutput.value = `Error generating proposal:\n${response ? response.error : 'Could not reach backend API.'}`;
+            const errMsg = response ? response.error : 'Could not reach backend API.';
+            proposalOutput.value = `Error generating proposal:\n${errMsg}`;
+            
+            // Check if rate limit or generation limit is reached
+            if (errMsg.includes('429') || errMsg.toLowerCase().includes('limit reached')) {
+              highlightLicenseSection();
+            }
           }
         });
       });
@@ -523,7 +529,7 @@
           chrome.storage.local.get(['licenseKey', 'instanceId'], (settings) => {
             const isPremium = settings.licenseKey && (settings.licenseKey.trim().toUpperCase().startsWith('BIDIQ-PREM-') || settings.instanceId);
             if (!isPremium) {
-              alert('🔒 Custom Tones (Professional & Technical) are a Premium Feature. Please unlock Premium in the BidIQ popup settings to use selective tones!');
+              highlightLicenseSection();
               return;
             }
             chips.forEach(c => c.classList.remove('active'));
@@ -536,6 +542,27 @@
         chip.classList.add('active');
       });
     });
+  }
+
+  function highlightLicenseSection() {
+    const licenseCard = shadowRoot.querySelector('.bidiq-card:last-child');
+    const licenseInput = shadowRoot.getElementById('sidebar-license-key');
+    if (licenseCard) {
+      licenseCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    if (licenseInput) {
+      licenseInput.focus();
+      
+      // Visual feedback flash
+      licenseInput.style.transition = 'border-color 0.2s ease, box-shadow 0.2s ease';
+      licenseInput.style.borderColor = '#ec4899';
+      licenseInput.style.boxShadow = '0 0 0 3px rgba(236, 72, 153, 0.4)';
+      
+      setTimeout(() => {
+        licenseInput.style.borderColor = '';
+        licenseInput.style.boxShadow = '';
+      }, 1500);
+    }
   }
 
   function setGeneratingState(isGenerating) {
