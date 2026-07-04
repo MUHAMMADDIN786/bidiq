@@ -687,6 +687,13 @@
     // 4. Update UI with scraped data
     updateUI(scrapedData.client);
 
+    // Also update scraped freelancer info badges in real-time
+    const scraped = parseFreelancerBaseline();
+    const sidebarTitle = shadowRoot.getElementById('sidebar-scraped-title');
+    const sidebarRate = shadowRoot.getElementById('sidebar-scraped-rate');
+    if (sidebarTitle) sidebarTitle.textContent = scraped.profileTitle || 'Not Found';
+    if (sidebarRate) sidebarRate.textContent = scraped.rate || 'Not Found';
+
     // Track analyzed job in stats
     chrome.runtime.sendMessage({ action: 'UPDATE_STATS', type: 'analyzed' });
   }
@@ -865,6 +872,18 @@
       }
       
       updateSidebarLicenseUI(settings.licenseKey, settings.instanceId);
+
+      // Dynamically scrape and update the freelancer info badges
+      const scraped = parseFreelancerBaseline();
+      const sidebarTitle = shadowRoot.getElementById('sidebar-scraped-title');
+      const sidebarRate = shadowRoot.getElementById('sidebar-scraped-rate');
+
+      if (sidebarTitle) {
+        sidebarTitle.textContent = scraped.profileTitle || 'Not Found';
+      }
+      if (sidebarRate) {
+        sidebarRate.textContent = scraped.rate || 'Not Found';
+      }
     });
   }
 
