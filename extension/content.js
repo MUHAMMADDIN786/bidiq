@@ -35,7 +35,7 @@
   // Extract a unique identifier from the job details page URL or active panel
   function getJobIdFromUrl() {
     const url = window.location.href;
-    const jobMatch = url.match(/\/jobs\/([^/?#]+)/) || url.match(/details=([^&]+)/) || url.match(/job=([^&]+)/);
+    const jobMatch = url.match(/\/jobs?\/([^/?#\s/]+)/) || url.match(/details=([^&]+)/) || url.match(/job=([^&]+)/);
     if (jobMatch) return jobMatch[1];
 
     // Check if slider drawer is open
