@@ -7,6 +7,11 @@
 
   // Poll or observe DOM changes to detect navigation on Upwork (SPA)
   function init() {
+    console.log('BidIQ Content Script: Starting initialization...');
+    
+    // Inject the floating toggle button immediately on page load
+    ensurePanelInjected();
+
     setInterval(() => {
       const jobId = getJobIdFromUrl();
       if (jobId && jobId !== currentJobId) {
