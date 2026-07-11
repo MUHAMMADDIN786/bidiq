@@ -67,8 +67,20 @@
 
     for (const selector of selectors) {
       const el = document.querySelector(selector);
-      if (el && el.innerText.trim().length > 30) {
-        return el.innerText;
+      if (el) {
+        const text = el.innerText.trim();
+        // Check if the element has text and actually contains client metrics keywords
+        if (text.length > 30 && (
+          text.toLowerCase().includes('hire') || 
+          text.toLowerCase().includes('spent') || 
+          text.toLowerCase().includes('spend') || 
+          text.toLowerCase().includes('rating') || 
+          text.toLowerCase().includes('payment') ||
+          text.toLowerCase().includes('client') ||
+          text.toLowerCase().includes('about')
+        )) {
+          return text;
+        }
       }
     }
     return '';
@@ -651,6 +663,19 @@
 
     // 3. Scrape Client Metrics using flexible heuristics (regular expressions & DOM parsing)
     const clientText = getClientSectionText() || document.body.innerText;
+    
+    // Check if the client stats section is rendered in the DOM yet
+    const isClientLoaded = clientText.toLowerCase().includes('about the client') || 
+                           clientText.toLowerCase().includes('payment method') || 
+                           clientText.toLowerCase().includes('jobs posted') ||
+                           clientText.toLowerCase().includes('hire rate') ||
+                           clientText.toLowerCase().includes('unverified') ||
+                           clientText.toLowerCase().includes('verified');
+
+    if (!isClientLoaded) {
+      console.log('BidIQ: Client details block not loaded yet, retrying...');
+      return; // Return early without setting pageScrapedSuccessfully to keep retrying
+    }
     
     // Scrape Hire Rate (e.g., "75% hire rate")
     let hireRate = null;
