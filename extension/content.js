@@ -791,6 +791,13 @@
 
     // Track analyzed job in stats
     chrome.runtime.sendMessage({ action: 'UPDATE_STATS', type: 'analyzed' });
+
+    // Mark page as successfully scraped to stop retry polling loop
+    pageScrapedSuccessfully = true;
+
+    } catch (error) {
+      console.error('BidIQ content script error during processPage:', error);
+    }
   }
 
   // Update the Risk Assessor card components dynamically
@@ -961,12 +968,6 @@
       });
     }
 
-    // Mark page as successfully scraped to stop retry polling loop
-    pageScrapedSuccessfully = true;
-    
-    } catch (error) {
-      console.error('BidIQ content script error during processPage:', error);
-    }
   }
 
   function loadSidebarSettings() {
