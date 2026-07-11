@@ -649,18 +649,15 @@
                    document.querySelector('.job-description') ||
                    document.querySelector('[itemprop="description"]') ||
                    document.querySelector('.up-line-clamp') ||
-                   document.querySelector('.break-word');
-
-    if (!titleEl || !descEl) {
-      console.log('BidIQ: Not a job details page or elements not loaded yet.');
-      return;
-    }
+                   document.querySelector('.break-word') ||
+                   document.querySelector('article') ||
+                   document.querySelector('main');
 
     ensurePanelInjected();
 
-    // 2. Scrape job details
-    const title = titleEl.textContent.trim();
-    const description = descEl.textContent.trim();
+    // 2. Scrape job details (with safe fallbacks)
+    const title = titleEl ? titleEl.textContent.trim() : 'Upwork Job';
+    const description = descEl ? descEl.textContent.trim() : 'No job description could be matched.';
 
     // 3. Scrape Client Metrics using flexible heuristics (regular expressions & DOM parsing)
     const clientText = getClientSectionText() || document.body.innerText;
