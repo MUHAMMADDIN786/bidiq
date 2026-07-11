@@ -4,6 +4,7 @@
   let shadowRoot = null;
   let currentJobId = null;
   let scrapedData = null;
+  let pageScrapedSuccessfully = false;
 
   // Poll or observe DOM changes to detect navigation on Upwork (SPA)
   function init() {
@@ -14,10 +15,16 @@
 
     setInterval(() => {
       const jobId = getJobIdFromUrl();
-      if (jobId && jobId !== currentJobId) {
-        currentJobId = jobId;
-        // Wait a brief moment for dynamic content to load before scraping
-        setTimeout(processPage, 1200);
+      if (jobId) {
+        if (jobId !== currentJobId) {
+          currentJobId = jobId;
+          pageScrapedSuccessfully = false;
+          // Wait a brief moment for dynamic content to load before scraping
+          setTimeout(processPage, 1200);
+        } else if (!pageScrapedSuccessfully) {
+          // Keep attempting to scrape the page details if it failed on previous ticks
+          processPage();
+        }
       }
     }, 1200);
 
@@ -919,6 +926,9 @@
         valRiskFactors.appendChild(item);
       });
     }
+
+    // Mark page as successfully scraped to stop retry polling loop
+    pageScrapedSuccessfully = true;
   }
 
   function loadSidebarSettings() {
