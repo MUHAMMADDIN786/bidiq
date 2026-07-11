@@ -634,8 +634,9 @@
 
   // Scrapes the client details and job text from the page using advanced heuristics
   function processPage() {
-    // 1. Check if we are on a job details page/panel
-    const titleEl = document.querySelector('[data-qa="job-title"]') || 
+    try {
+      // 1. Check if we are on a job details page/panel
+      const titleEl = document.querySelector('[data-qa="job-title"]') || 
                     document.querySelector('.fe-job-details-header h1') || 
                     document.querySelector('.job-details-header h1') || 
                     document.querySelector('.job-details-panel h1') ||
@@ -794,6 +795,8 @@
 
   // Update the Risk Assessor card components dynamically
   function updateUI(client) {
+    if (!shadowRoot) return;
+
     const valHireRate = shadowRoot.getElementById('val-hire-rate');
     const valPayRate = shadowRoot.getElementById('val-pay-rate');
     const valTotalSpend = shadowRoot.getElementById('val-total-spend');
@@ -809,6 +812,12 @@
     const valRiskLevel = shadowRoot.getElementById('val-risk-level');
     const valRiskFactors = shadowRoot.getElementById('val-risk-factors');
     const toneLockBadge = shadowRoot.getElementById('tone-lock-badge');
+
+    // Safety check: ensure all card elements exist before styling them
+    if (!cardHireRate || !cardPayRate || !cardSpend || !cardRating || !valRiskFactors) {
+      console.warn('BidIQ: Sidebar UI components not fully ready inside shadow DOM yet.');
+      return;
+    }
 
     // Reset card highlight classes
     [cardHireRate, cardPayRate, cardSpend, cardRating].forEach(card => {
@@ -954,6 +963,10 @@
 
     // Mark page as successfully scraped to stop retry polling loop
     pageScrapedSuccessfully = true;
+    
+    } catch (error) {
+      console.error('BidIQ content script error during processPage:', error);
+    }
   }
 
   function loadSidebarSettings() {
