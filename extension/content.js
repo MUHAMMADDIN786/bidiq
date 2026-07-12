@@ -376,7 +376,14 @@
           if (e.target.closest('input') || e.target.closest('button') || e.target.closest('a') || e.target.closest('.lock-indicator')) {
             return;
           }
+          const isExpanding = card.classList.contains('collapsed');
           card.classList.toggle('collapsed');
+          
+          if (isExpanding) {
+            setTimeout(() => {
+              card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 120);
+          }
         });
       }
     });
