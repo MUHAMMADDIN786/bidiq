@@ -670,8 +670,37 @@
                            clientText.toLowerCase().includes('unverified') ||
                            clientText.toLowerCase().includes('verified');
 
+    const jobId = getJobIdFromUrl();
+
     if (!isClientLoaded) {
-      console.log('BidIQ: Client details block not loaded yet, retrying...');
+      if (jobId) {
+        // Attempt to restore cached metrics from local storage to handle the Apply page
+        chrome.storage.local.get([`job_${jobId}`], (cache) => {
+          const cachedClient = cache[`job_${jobId}`];
+          if (cachedClient) {
+            console.log('BidIQ: Restoring cached client metrics for jobId:', jobId);
+            scrapedData = {
+              title,
+              description,
+              client: cachedClient
+            };
+            
+            updateUI(cachedClient);
+
+            const scraped = parseFreelancerBaseline();
+            const sidebarTitle = shadowRoot.getElementById('sidebar-scraped-title');
+            const sidebarRate = shadowRoot.getElementById('sidebar-scraped-rate');
+            if (sidebarTitle) sidebarTitle.textContent = scraped.profileTitle || 'Not Found';
+            if (sidebarRate) sidebarRate.textContent = scraped.rate || 'Not Found';
+
+            pageScrapedSuccessfully = true;
+          } else {
+            console.log('BidIQ: Client details block not loaded yet and no cache, retrying...');
+          }
+        });
+      } else {
+        console.log('BidIQ: Client details block not loaded yet, retrying...');
+      }
       return; // Return early without setting pageScrapedSuccessfully to keep retrying
     }
     
@@ -778,6 +807,11 @@
 
     // 4. Update UI with scraped data
     updateUI(scrapedData.client);
+
+    // Cache the scraped client metrics locally to allow persistence on the Apply page
+    if (jobId) {
+      chrome.storage.local.set({ [`job_${jobId}`]: scrapedData.client });
+    }
 
     // Also update scraped freelancer info badges in real-time
     const scraped = parseFreelancerBaseline();
