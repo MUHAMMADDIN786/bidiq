@@ -266,7 +266,7 @@
           </div>
 
           <!-- 3. Proposal Draft Generator Card -->
-          <div class="bidiq-card">
+          <div class="bidiq-card collapsed">
             <div class="bidiq-section-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 20h9"></path>
