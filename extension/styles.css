@@ -588,9 +588,9 @@
   border-radius: 3px;
 }
 .bidiq-body::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.35); /* Increased default opacity */
   border-radius: 3px;
 }
 .bidiq-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.55);
 }

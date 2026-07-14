@@ -404,6 +404,24 @@
     const inputSidebarKey = shadowRoot.getElementById('sidebar-license-key');
     const textareaProfile = shadowRoot.getElementById('sidebar-user-profile');
 
+    // Isolate mouse-wheel scrolling inside the panel to prevent the background Upwork page from scrolling
+    const bodyContainer = shadowRoot.querySelector('.bidiq-body');
+    if (panel && bodyContainer) {
+      panel.addEventListener('wheel', (e) => {
+        e.stopPropagation();
+        
+        const scrollTop = bodyContainer.scrollTop;
+        const scrollHeight = bodyContainer.scrollHeight;
+        const height = bodyContainer.clientHeight;
+        const delta = e.deltaY;
+        
+        // Lock background window scroll if at boundary limits
+        if ((delta < 0 && scrollTop <= 0) || (delta > 0 && scrollTop + height >= scrollHeight)) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+    }
+
     // Save profile context on input change
     if (textareaProfile) {
       textareaProfile.addEventListener('input', () => {
