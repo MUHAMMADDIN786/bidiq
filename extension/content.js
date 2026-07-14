@@ -639,6 +639,129 @@
     }
   }
 
+  // Asynchronously fetches and parses the main jobs description page in the background
+  async function scrapeJobPageBackground(jobId) {
+    if (!jobId) return;
+    console.log(`BidIQ: Fetching job page HTML in background for details: ${jobId}`);
+    try {
+      const url = `https://www.upwork.com/jobs/${jobId}/`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Failed to fetch job page HTML');
+      const html = await res.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+
+      // Extract client section text from parsed document
+      let clientText = '';
+      const selectors = [
+        '[data-test="client-stats"]',
+        '.fe-client-stats',
+        '.client-about',
+        '[data-qa="client-about"]',
+        'section[class*="client-about"]',
+        'aside',
+        '#sidebar',
+        'div[class*="client-history"]',
+        '[data-qa="client-job-history"]',
+        '.job-details-panel',
+        '.slider-panel',
+        '[data-test="job-details-drawer"]'
+      ];
+
+      for (const selector of selectors) {
+        const el = doc.querySelector(selector);
+        if (el) {
+          const text = el.innerText.trim();
+          if (text.length > 30 && (
+            text.toLowerCase().includes('hire') ||
+            text.toLowerCase().includes('spent') ||
+            text.toLowerCase().includes('spend') ||
+            text.toLowerCase().includes('rating') ||
+            text.toLowerCase().includes('payment') ||
+            text.toLowerCase().includes('client') ||
+            text.toLowerCase().includes('about')
+          )) {
+            clientText = text;
+            break;
+          }
+        }
+      }
+      if (!clientText) clientText = doc.body.innerText;
+
+      // Perform scraping regex on the background clientText
+      let hireRate = null;
+      const hireRateMatch = clientText.match(/(\d+)%\s*(?:hire\s+rate|hiring\s+rate|hires)/i) || 
+                            clientText.match(/(?:hire\s+rate|hiring\s+rate):\s*(\d+)%/i);
+      if (hireRateMatch) hireRate = parseInt(hireRateMatch[1], 10);
+
+      let avgPayRate = null;
+      const payRateMatch = clientText.match(/\$(\d+(?:\.\d+)?)\/hr\s*(?:avg|average)/i) || 
+                           clientText.match(/\$(\d+(?:\.\d+)?)\s*(?:average|avg)\s*hourly/i) ||
+                           clientText.match(/average\s*hourly\s*rate:\s*\$(\d+(?:\.\d+)?)/i) ||
+                           clientText.match(/\$(\d+(?:\.\d+)?)\/hr/i);
+      if (payRateMatch) avgPayRate = parseFloat(payRateMatch[1]);
+
+      let totalSpend = null;
+      const spendMatch = clientText.match(/\$(\d+(?:\.\d+)?(?:k|m|b)?\+?)\s*(?:total\s*spend|spent|spend)/i) ||
+                         clientText.match(/(?:total\s*spend|spent):\s*\$(\d+(?:\.\d+)?(?:k|m|b)?\+?)/i);
+      if (spendMatch) totalSpend = spendMatch[1].trim();
+
+      let rating = null;
+      const ratingEl = doc.querySelector('[data-test="client-rating"]') || 
+                       doc.querySelector('[data-qa="client-rating"]') ||
+                       doc.querySelector('.fe-client-rating');
+      if (ratingEl) {
+        const m = ratingEl.innerText.match(/(\d+(?:\.\d+)?)/);
+        if (m) rating = parseFloat(m[1]);
+      }
+
+      const isPaymentVerified = clientText.toLowerCase().includes('payment method verified') || 
+                                doc.querySelector('[data-qa="payment-verified"]') !== null ||
+                                doc.querySelector('.fe-payment-verified') !== null;
+
+      let location = 'Unknown Location';
+      const locEl = doc.querySelector('[data-qa="client-location"]') || 
+                    doc.querySelector('[data-test="client-country"]') ||
+                    doc.querySelector('.fe-client-location');
+      if (locEl) {
+        location = locEl.textContent.trim().replace(/^(location|client's location):?/i, '').trim();
+      } else {
+        const locMatch = clientText.match(/client's\s*local\s*time.*?in\s*([a-zA-Z\s,]+)/i);
+        if (locMatch) location = locMatch[1].trim();
+      }
+
+      const clientData = {
+        circle: null,
+        hireRate,
+        avgPayRate,
+        totalSpend: totalSpend || 'N/A',
+        rating: rating || null,
+        paymentVerified: isPaymentVerified,
+        location
+      };
+
+      console.log('BidIQ: Background Scraped Client Data:', clientData);
+
+      // Cache it
+      chrome.storage.local.set({ [`job_${jobId}`]: clientData });
+      
+      // Update UI
+      updateUI(clientData);
+      
+      const scraped = parseFreelancerBaseline();
+      const sidebarTitle = shadowRoot.getElementById('sidebar-scraped-title');
+      const sidebarRate = shadowRoot.getElementById('sidebar-scraped-rate');
+      if (sidebarTitle) sidebarTitle.textContent = scraped.profileTitle || 'Not Found';
+      if (sidebarRate) sidebarRate.textContent = scraped.rate || 'Not Found';
+
+      pageScrapedSuccessfully = true;
+
+    } catch (err) {
+      console.error('BidIQ: Background scraping failed:', err);
+    }
+  }
+
   // Scrapes the client details and job text from the page using advanced heuristics
   function processPage() {
     try {
@@ -702,7 +825,8 @@
 
             pageScrapedSuccessfully = true;
           } else {
-            console.log('BidIQ: Client details block not loaded yet and no cache, retrying...');
+            console.log('BidIQ: Client details block not loaded yet and no cache, triggering background fetch...');
+            scrapeJobPageBackground(jobId);
           }
         });
       } else {
