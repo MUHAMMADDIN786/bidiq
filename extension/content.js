@@ -337,7 +337,7 @@
               <div id="sidebar-license-badge" style="font-size:11px; margin-top:4px; font-weight:600; color:var(--bidiq-text-muted);">Checking status...</div>
               
               <div id="sidebar-upgrade-btn-wrapper" style="margin-top:10px;">
-                <a href="https://bidiq.lemonsqueezy.com" target="_blank" class="bidiq-btn-primary" style="display:block; text-align:center; text-decoration:none; padding:10px; font-size:12px; font-weight:700; border-radius:8px; background:linear-gradient(135deg, #ec4899 0%, #a855f7 100%);">✨ Get Premium License ($9/mo)</a>
+                <a href="https://bidiq.lemonsqueezy.com/checkout/buy/9bc38109-a9b9-4475-88dc-830f9492c17c" target="_blank" class="bidiq-btn-primary" style="display:block; text-align:center; text-decoration:none; padding:10px; font-size:12px; font-weight:700; border-radius:8px; background:linear-gradient(135deg, #ec4899 0%, #a855f7 100%);">✨ Get Premium License ($9/mo)</a>
               </div>
             </div>
           </div>
