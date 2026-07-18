@@ -330,8 +330,16 @@
             </div>
             
             <div class="bidiq-option-group">
-              <div style="display:flex; gap:8px;">
-                <input type="text" id="sidebar-license-key" placeholder="Enter BIDIQ-PREM- key" style="flex:1; background:rgba(255,255,255,0.03); border:1px solid var(--bidiq-border); border-radius:8px; padding:8px 12px; color:var(--bidiq-text-main); font-size:11px; font-family:var(--bidiq-font); outline:none;">
+              <div style="display:flex; gap:8px; align-items:center;">
+                <div style="position:relative; flex:1; display:flex; align-items:center;">
+                  <input type="password" id="sidebar-license-key" placeholder="Enter license key" style="width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--bidiq-border); border-radius:8px; padding:8px 30px 8px 12px; color:var(--bidiq-text-main); font-size:11px; font-family:var(--bidiq-font); outline:none;">
+                  <button id="sidebar-toggle-visible" type="button" style="position:absolute; right:8px; background:transparent; border:none; cursor:pointer; color:var(--bidiq-text-muted); display:flex; align-items:center; padding:0; z-index:10;">
+                    <svg class="eye-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
                 <button id="sidebar-btn-verify-license" class="bidiq-btn-secondary" style="padding:0 12px; height:34px; border-radius:8px; margin:0; flex-shrink:0;">Verify</button>
               </div>
               <div id="sidebar-license-badge" style="font-size:11px; margin-top:4px; font-weight:600; color:var(--bidiq-text-muted);">Checking status...</div>
@@ -403,6 +411,32 @@
     const btnVerifySidebar = shadowRoot.getElementById('sidebar-btn-verify-license');
     const inputSidebarKey = shadowRoot.getElementById('sidebar-license-key');
     const textareaProfile = shadowRoot.getElementById('sidebar-user-profile');
+    const toggleVisibleBtn = shadowRoot.getElementById('sidebar-toggle-visible');
+
+    // Toggle license key input visibility (password vs text)
+    if (toggleVisibleBtn && inputSidebarKey) {
+      toggleVisibleBtn.addEventListener('click', () => {
+        const isPassword = inputSidebarKey.type === 'password';
+        inputSidebarKey.type = isPassword ? 'text' : 'password';
+        
+        if (isPassword) {
+          toggleVisibleBtn.innerHTML = `
+            <svg class="eye-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+              <path d="M9 9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"></path>
+              <path d="M17.51 17.51a11.95 11.95 0 0 1-5.51 1.49c-7 0-11-8-11-8a18.54 18.54 0 0 1 2.22-3.13M4.9 4.9A11.92 11.92 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+            </svg>
+          `;
+        } else {
+          toggleVisibleBtn.innerHTML = `
+            <svg class="eye-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          `;
+        }
+      });
+    }
 
     // Isolate mouse-wheel scrolling inside the panel to prevent the background Upwork page from scrolling
     const bodyContainer = shadowRoot.querySelector('.bidiq-body');
