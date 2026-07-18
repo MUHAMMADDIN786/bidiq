@@ -577,10 +577,15 @@
       const proposalText = proposalOutput.value;
       if (!proposalText) return;
 
-      // Common Upwork proposal cover letter textareas
+      // Common Upwork proposal cover letter textareas (with broad fallbacks)
       const coverLetterArea = document.querySelector('textarea[aria-labelledby*="cover-letter"]') || 
+                              document.querySelector('textarea[aria-label*="cover-letter"]') || 
+                              document.querySelector('textarea[aria-label*="cover letter"]') || 
                               document.querySelector('textarea[name*="coverLetter"]') || 
-                              document.querySelector('.up-textarea textarea');
+                              document.querySelector('textarea[id*="cover-letter"]') ||
+                              document.querySelector('.up-textarea textarea') ||
+                              document.querySelector('textarea.up-textarea') ||
+                              document.querySelector('textarea');
 
       if (coverLetterArea) {
         coverLetterArea.value = proposalText;
