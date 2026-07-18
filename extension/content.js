@@ -627,8 +627,7 @@
         coverLetterArea.dispatchEvent(new Event('input', { bubbles: true }));
         coverLetterArea.dispatchEvent(new Event('change', { bubbles: true }));
         
-        // Show success alert
-        alert('Proposal draft successfully applied to the cover letter field!');
+        console.log('BidIQ: Proposal draft successfully applied to the cover letter field.');
       } else {
         alert('Could not find cover letter field. Please copy and paste the draft manually.');
       }

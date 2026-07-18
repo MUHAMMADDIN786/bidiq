@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "BidIQ - Upwork AI Proposal Generator",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "Save connects, check client risk history, and generate tailored AI proposals on Upwork.",
   "permissions": [
     "storage"
