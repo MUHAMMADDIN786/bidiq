@@ -349,6 +349,13 @@
               </div>
             </div>
           </div>
+
+          <!-- Subtle footer legal links -->
+          <div style="text-align:center; padding:15px 0 10px 0; font-size:10px; font-family:var(--bidiq-font); color:var(--bidiq-text-muted); border-top:1px solid var(--bidiq-border); margin-top:20px; opacity:0.75;">
+            <a href="https://muhammad-din.vercel.app/privacy.html" target="_blank" style="color:var(--bidiq-text-muted); text-decoration:none; transition:color 0.2s;">Privacy Policy</a>
+            <span style="margin:0 8px; color:rgba(255,255,255,0.1);">|</span>
+            <a href="https://muhammad-din.vercel.app/terms.html" target="_blank" style="color:var(--bidiq-text-muted); text-decoration:none; transition:color 0.2s;">Terms of Service</a>
+          </div>
         </div>
       </div>
     `;
